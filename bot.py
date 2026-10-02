@@ -1,3 +1,5 @@
+import os
+
 from telegram import Update
 from telegram.ext import Application, CommandHandler, ContextTypes
 
@@ -145,6 +147,17 @@ def main():
             "BOT_TOKEN не указан в Environment Variables"
         )
 
+    port = int(os.environ.get("PORT", "10000"))
+
+    render_url = os.environ.get("RENDER_EXTERNAL_URL")
+
+    if not render_url:
+        raise RuntimeError(
+            "RENDER_EXTERNAL_URL не найден"
+        )
+
+    webhook_url = f"{render_url}/telegram"
+
     app = (
         Application
         .builder()
@@ -156,9 +169,16 @@ def main():
     app.add_handler(CommandHandler("phone", phone))
     app.add_handler(CommandHandler("name", name))
 
-    print("Bot started")
+    print(f"Starting webhook on port {port}")
+    print(f"Webhook URL: {webhook_url}")
 
-    app.run_polling()
+    app.run_webhook(
+        listen="0.0.0.0",
+        port=port,
+        url_path="telegram",
+        webhook_url=webhook_url,
+        drop_pending_updates=True,
+    )
 
 
 if __name__ == "__main__":
