@@ -2,9 +2,9 @@ from telegram import Update
 from telegram.ext import Application, CommandHandler, ContextTypes
 
 from config import BOT_TOKEN
-from sources.google import search_google
-from sources.alerts import google_alerts, talkwalker_alerts
-from sources.news import google_news
+from google import search_google
+from alerts import google_alerts, talkwalker_alerts
+from news import google_news
 
 
 def unique_results(results):
@@ -142,7 +142,7 @@ async def name(update: Update, context: ContextTypes.DEFAULT_TYPE):
 def main():
     if not BOT_TOKEN:
         raise RuntimeError(
-            "BOT_TOKEN не указан в .env"
+            "BOT_TOKEN не указан в Environment Variables"
         )
 
     app = (
