@@ -15,15 +15,19 @@ def _read_feeds(value, source):
         if not rss_url:
             continue
 
-        feed = feedparser.parse(rss_url)
+        try:
+            feed = feedparser.parse(rss_url)
 
-        for entry in feed.entries:
-            results.append({
-                "source": source,
-                "title": entry.get("title", ""),
-                "url": entry.get("link", ""),
-                "snippet": entry.get("summary", ""),
-            })
+            for entry in feed.entries:
+                results.append({
+                    "source": source,
+                    "title": entry.get("title", ""),
+                    "url": entry.get("link", ""),
+                    "snippet": entry.get("summary", ""),
+                })
+
+        except Exception as e:
+            print(f"{source} error:", e)
 
     return results
 
